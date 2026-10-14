@@ -196,7 +196,7 @@ export async function executeHooks(
   hookConfigs: HookConfig[],
   input: HookInput,
   projectDir: string,
-  toolName?: string,
+  toolName?: string | string[],
   client?: { chat: (opts: { messages: Array<{ role: string; content: string }> }) => Promise<{ content: string }> }
 ): Promise<HooksResult> {
   const result: HooksResult = {
@@ -208,9 +208,11 @@ export async function executeHooks(
   // Ensure hookConfigs is an array
   const configs = Array.isArray(hookConfigs) ? hookConfigs : [];
 
-  // Filter configs that match the tool name (if applicable)
-  const matchingConfigs = toolName
-    ? configs.filter((config) => matchTool(toolName, config?.matcher))
+  // Filter configs that match the tool name (if applicable).
+  // A list of names matches when any one of the names matches.
+  const toolNames = toolName === undefined ? [] : Array.isArray(toolName) ? toolName : [toolName];
+  const matchingConfigs = toolNames.length > 0
+    ? configs.filter((config) => toolNames.some((name) => matchTool(name, config?.matcher)))
     : configs;
 
   // Collect all hooks to execute

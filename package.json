@@ -27,6 +27,7 @@
   "files": [
     "dist",
     "src",
+    "server.ts",
     "examples",
     "README.md",
     "LICENSE"
@@ -36,10 +37,15 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "bun": "./src/index.ts"
+    },
+    "./server": {
+      "types": "./dist/v2/index.d.ts",
+      "bun": "./src/v2/index.ts",
+      "import": "./dist/v2/index.js"
     }
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "build": "bun build ./src/index.ts ./src/v2/index.ts --outdir ./dist --target bun",
     "typecheck": "tsc --noEmit",
     "dev": "bun run --watch src/index.ts",
     "prepublishOnly": "bun run typecheck && bun run build",

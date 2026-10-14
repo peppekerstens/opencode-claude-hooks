@@ -14,7 +14,8 @@ import { executeHooks } from "../executor";
 export async function handlePreToolUse(
   ctx: PluginContext,
   toolName: string,
-  toolInput: Record<string, unknown>
+  toolInput: Record<string, unknown>,
+  matchNames: string[] = [toolName]
 ): Promise<HooksResult> {
   const config = await getHooksConfig(ctx.cwd);
   const hookConfigs = getHooksForEvent(config, "PreToolUse");
@@ -37,7 +38,7 @@ export async function handlePreToolUse(
     tool_input: toolInput,
   };
 
-  return executeHooks(hookConfigs, input, ctx.cwd, toolName);
+  return executeHooks(hookConfigs, input, ctx.cwd, matchNames);
 }
 
 /**
@@ -47,7 +48,8 @@ export async function handlePostToolUse(
   ctx: PluginContext,
   toolName: string,
   toolInput: Record<string, unknown>,
-  toolOutput: string
+  toolOutput: string,
+  matchNames: string[] = [toolName]
 ): Promise<HooksResult> {
   const config = await getHooksConfig(ctx.cwd);
   const hookConfigs = getHooksForEvent(config, "PostToolUse");
@@ -71,7 +73,7 @@ export async function handlePostToolUse(
     tool_output: toolOutput,
   };
 
-  return executeHooks(hookConfigs, input, ctx.cwd, toolName);
+  return executeHooks(hookConfigs, input, ctx.cwd, matchNames);
 }
 
 /**
@@ -81,7 +83,8 @@ export async function handlePostToolUseFailure(
   ctx: PluginContext,
   toolName: string,
   toolInput: Record<string, unknown>,
-  error: string
+  error: string,
+  matchNames: string[] = [toolName]
 ): Promise<HooksResult> {
   const config = await getHooksConfig(ctx.cwd);
   const hookConfigs = getHooksForEvent(config, "PostToolUseFailure");
@@ -105,5 +108,5 @@ export async function handlePostToolUseFailure(
     error,
   };
 
-  return executeHooks(hookConfigs, input, ctx.cwd, toolName);
+  return executeHooks(hookConfigs, input, ctx.cwd, matchNames);
 }
